@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>给胡朝阳的一封信 💌</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@300;400;600&family=Dancing+Script:wght@400;700&display=swap');
+
+:root {
+  --rose: #e8637a;
+  --gold: #f2c14e;
+  --blush: #fce4ec;
+  --deep: #1a0a10;
+  --petal: #f9a8b8;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+
+html, body {
+  width:100%; height:100%;
+  overflow:hidden;
+  background: var(--deep);
+  font-family: 'Noto Serif SC', serif;
+  touch-action: manipulation;
+}
+
+/* ── CANVAS BG ── */
+#bg { position:fixed; inset:0; z-index:0; }
+
+/* ── SCREENS ── */
+.screen {
+  position:fixed; inset:0; z-index:10;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center;
+  padding: 30px 28px;
+  opacity:0; pointer-events:none;
+  transition: opacity 0.8s ease;
+}
+.screen.active { opacity:1; pointer-events:all; }
+
+/* ── SCREEN 1: Envelope ── */
+#s1 { background: radial-gradient(ellipse at 50% 60%, #2d0a18 0%, #0d0508 100%); }
+
+.envelope-wrap {
+  display:flex; flex-direction:column; align-items:center;
+  animation: floatUp 3s ease-in-out infinite;
+}
+@keyframes floatUp {
+  0%,100% { transform: translateY(0px); }
+  50% { transform: translateY(-12px); }
+}
+.envelope {
+  width: 220px; height: 155px;
+  position: relative;
+  cursor: pointer;
+  filter: drop-shadow(0 10px 30px rgba(232,99,122,0.5));
+}
+.env-body {
+  width:100%; height:100%;
+  background: linear-gradient(160deg, #8b1a2e, #c03050);
+  border-radius: 6px;
+  position:relative; overflow:hidden;
+}
+.env-body::after {
+  content:'';
+  position:absolute; inset:0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.08) 0%, transparent 60%);
+}
+.env-flap {
+  position:absolute; top:0; left:0; right:0;
+  height:0; width:0;
+  border-left: 110px solid transparent;
+  border-right: 110px solid transparent;
+  border-top: 75px solid #6b1122;
+  transform-origin: top center;
+  transition: transform 0.5s ease;
+  z-index:2;
+}
+.envelope:active .env-flap { transform: rotateX(180deg); }
+.env-seal {
+  position:absolute; top:50%; left:50%;
+  transform: translate(-50%,-50%);
+  width:38px; height:38px;
+  background: radial-gradient(circle, #f2c14e, #d4920a);
+  border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  font-size:18px;
+  box-shadow: 0 2px 10px rgba(242,193,78,0.6);
+  z-index:3;
+}
+.env-lines { position:absolute; bottom:0; left:0; right:0; height:60%; }
+.env-lines::before, .env-lines::after {
+  content:'';
+  position:absolute;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.env-lines::before { bottom:30%; left:12%; right:12%; }
+.env-lines::after { bottom:15%; left:20%; right:20%; }
+
+.tap-hint {
+  margin-top:30px;
+  color: rgba(255,200,200,0.7);
+  font-size:14px;
+  letter-spacing:3px;
+  animation: pulse 2s infinite;
+}
+.tap-hint span { display:block; text-align:center; margin-top:6px; font-size:22px; }
+@keyframes pulse { 0%,100%{opacity:0.4} 50%{opacity:1} }
+
+#s1-title {
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:28px;
+  color: var(--gold);
+  text-align:center;
+  margin-bottom:36px;
+  letter-spacing:4px;
+  text-shadow: 0 0 20px rgba(242,193,78,0.4);
+}
+
+/* ── SCREEN 2: Rose petals ── */
+#s2 { background: radial-gradient(ellipse at 50% 40%, #1f0812 0%, #080308 100%); }
+
+.rose-container {
+  position:relative;
+  width:200px; height:200px;
+  margin-bottom:30px;
+}
+.rose-emoji {
+  font-size:100px;
+  text-align:center;
+  line-height:200px;
+  filter: drop-shadow(0 0 30px rgba(232,99,122,0.8));
+  animation: roseGlow 2s ease-in-out infinite;
+  cursor:pointer;
+  user-select:none;
+}
+@keyframes roseGlow {
+  0%,100%{filter:drop-shadow(0 0 20px rgba(232,99,122,0.6))}
+  50%{filter:drop-shadow(0 0 50px rgba(232,99,122,1))}
+}
+.petal-burst { position:absolute; inset:0; pointer-events:none; }
+.petal {
+  position:absolute; top:50%; left:50%;
+  width:10px; height:16px;
+  background: radial-gradient(ellipse, #f9a8b8, #e8637a);
+  border-radius: 50% 50% 50% 0;
+  transform-origin: bottom center;
+  opacity:0;
+}
+
+.s2-text {
+  font-size:18px;
+  color: rgba(255,220,228,0.9);
+  text-align:center;
+  line-height:1.9;
+  margin-bottom:30px;
+  letter-spacing:1px;
+}
+.s2-text strong { color: var(--gold); font-weight:600; }
+
+.tap-rose-hint {
+  font-size:13px;
+  color:rgba(255,180,200,0.5);
+  letter-spacing:2px;
+  animation:pulse 2s infinite;
+}
+
+/* ── SCREEN 3: Stars / Wish ── */
+#s3 { background: radial-gradient(ellipse at 50% 30%, #090515 0%, #030208 100%); }
+
+#star-canvas { position:absolute; inset:0; }
+
+.wish-content {
+  position:relative; z-index:5;
+  text-align:center;
+  padding:0 10px;
+}
+.wish-title {
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:32px;
+  color:var(--gold);
+  letter-spacing:5px;
+  margin-bottom:24px;
+  text-shadow:0 0 30px rgba(242,193,78,0.5);
+}
+.wish-poem {
+  font-size:16px;
+  color:rgba(255,235,240,0.88);
+  line-height:2.4;
+  letter-spacing:2px;
+  margin-bottom:36px;
+}
+.wish-poem em {
+  color: var(--petal);
+  font-style:normal;
+  font-weight:600;
+}
+
+.draw-hint {
+  font-size:12px;
+  color:rgba(200,180,255,0.5);
+  letter-spacing:2px;
+  margin-bottom:20px;
+  animation:pulse 2s infinite;
+}
+
+/* ── SCREEN 4: Question ── */
+#s4 { background: radial-gradient(ellipse at 50% 50%, #1a0a14 0%, #080308 100%); }
+
+.question-box { text-align:center; }
+
+.q-top {
+  font-size:80px;
+  margin-bottom:20px;
+  animation: heartBeat 1.2s ease-in-out infinite;
+}
+@keyframes heartBeat {
+  0%,100%{transform:scale(1)}
+  14%{transform:scale(1.2)}
+  28%{transform:scale(1)}
+  42%{transform:scale(1.15)}
+  70%{transform:scale(1)}
+}
+.q-text {
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:30px;
+  color:rgba(255,240,245,0.95);
+  line-height:1.6;
+  letter-spacing:4px;
+  margin-bottom:50px;
+  text-shadow:0 0 20px rgba(232,99,122,0.3);
+}
+.q-text span { color:var(--gold); }
+
+.btn-row {
+  display:flex;
+  gap:20px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+
+.btn-yes {
+  background: linear-gradient(135deg, #c2185b, #e91e63, #f06292);
+  color:#fff;
+  border:none;
+  padding: 18px 44px;
+  font-size:20px;
+  font-family:'Ma Shan Zheng',cursive;
+  border-radius:50px;
+  cursor:pointer;
+  letter-spacing:4px;
+  box-shadow: 0 6px 30px rgba(232,99,122,0.5);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position:relative;
+  overflow:hidden;
+}
+.btn-yes::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);
+}
+.btn-yes:active { transform:scale(0.94); box-shadow:0 2px 15px rgba(232,99,122,0.4); }
+
+.btn-no {
+  background: transparent;
+  color: rgba(200,150,160,0.6);
+  border: 1px solid rgba(200,150,160,0.25);
+  padding: 18px 32px;
+  font-size:16px;
+  font-family:'Noto Serif SC',serif;
+  border-radius:50px;
+  cursor:pointer;
+  letter-spacing:2px;
+  transition: all 0.3s;
+  position:relative;
+}
+
+/* ── SCREEN 5: Fireworks Final ── */
+#s5 { background: radial-gradient(ellipse at 50% 40%, #1a0512 0%, #080208 100%); }
+#fw-canvas { position:absolute; inset:0; }
+
+.final-content {
+  position:relative; z-index:5;
+  text-align:center;
+}
+.final-title {
+  font-family:'Ma Shan Zheng',cursive;
+  font-size:48px;
+  color:var(--gold);
+  letter-spacing:6px;
+  text-shadow:0 0 40px rgba(242,193,78,0.7);
+  margin-bottom:20px;
+  animation: finalPop 0.6s ease backwards;
+}
+@keyframes finalPop {
+  0%{transform:scale(0);opacity:0}
+  80%{transform:scale(1.1)}
+  100%{transform:scale(1);opacity:1}
+}
+.final-sub {
+  font-size:16px;
+  color:rgba(255,220,230,0.8);
+  letter-spacing:3px;
+  line-height:2;
+  margin-bottom:30px;
+}
+.final-hearts {
+  font-size:36px;
+  letter-spacing:8px;
+  animation:pulse 1.5s infinite;
+}
+
+/* ── PARTICLES ── */
+.particle {
+  position:fixed;
+  pointer-events:none;
+  border-radius:50%;
+  animation:particleFly 1.2s ease-out forwards;
+  z-index:100;
+}
+@keyframes particleFly {
+  0%{opacity:1;transform:translate(0,0) scale(1)}
+  100%{opacity:0;transform:translate(var(--tx),var(--ty)) scale(0)}
+}
+
+/* ── PROGRESS DOTS ── */
+#progress {
+  position:fixed; bottom:28px; left:50%;
+  transform:translateX(-50%);
+  display:flex; gap:10px; z-index:50;
+}
+.dot {
+  width:7px; height:7px;
+  border-radius:50%;
+  background:rgba(255,255,255,0.2);
+  transition:all 0.4s;
+}
+.dot.done { background:var(--rose); box-shadow:0 0 8px var(--rose); transform:scale(1.3); }
+
+/* ── SWIPE ARROW ── */
+.next-arrow {
+  margin-top:28px;
+  color:rgba(255,180,200,0.5);
+  font-size:13px;
+  letter-spacing:2px;
+  animation:pulse 2s infinite;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<canvas id="bg"></canvas>
+
+<!-- SCREEN 1: Envelope -->
+<div class="screen active" id="s1">
+  <div id="s1-title">有一封信<br>悄悄等着你 💌</div>
+  <div class="envelope-wrap">
+    <div class="envelope" id="envelope" onclick="openEnvelope()">
+      <div class="env-body">
+        <div class="env-flap"></div>
+        <div class="env-seal">💛</div>
+        <div class="env-lines"></div>
+      </div>
+    </div>
+  </div>
+  <div class="tap-hint">
+    轻轻点开它
+    <span>👆</span>
+  </div>
+</div>
+
+<!-- SCREEN 2: Rose -->
+<div class="screen" id="s2">
+  <div class="rose-container">
+    <div class="rose-emoji" id="rose" onclick="burstPetals(event)">🌹</div>
+    <div class="petal-burst" id="petalBurst"></div>
+  </div>
+  <div class="s2-text">
+    小阳，<br>
+    遇见你的每一天<br>
+    都像是<strong>被春风轻轻吹过</strong><br>
+    心里暖暖的
+  </div>
+  <div class="tap-rose-hint">点击玫瑰 🌹 感受花瓣飞舞</div>
+  <div class="next-arrow" onclick="goTo(3)">继续 →</div>
+</div>
+
+<!-- SCREEN 3: Stars -->
+<div class="screen" id="s3">
+  <canvas id="star-canvas"></canvas>
+  <div class="wish-content">
+    <div class="wish-title">许一个愿望</div>
+    <div class="wish-poem">
+      如果夜空里<br>
+      有一颗星是为你而亮<br>
+      那一定是<em>我</em><br>
+      在某个地方<br>
+      悄悄望着你
+    </div>
+    <div class="draw-hint">✨ 用手指在星空中划出你的愿望</div>
+    <div class="next-arrow" onclick="goTo(4)">继续 →</div>
+  </div>
+</div>
+
+<!-- SCREEN 4: Question -->
+<div class="screen" id="s4">
+  <div class="question-box">
+    <div class="q-top">💗</div>
+    <div class="q-text">
+      小阳<br>
+      你愿意成为<br>
+      <span>我的女朋友</span>吗？
+    </div>
+    <div class="btn-row">
+      <button class="btn-yes" onclick="sayYes()">💖 愿意！</button>
+      <button class="btn-no" id="btnNo" onmouseover="moveNo()" ontouchstart="moveNo()">再想想</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCREEN 5: Final -->
+<div class="screen" id="s5">
+  <canvas id="fw-canvas"></canvas>
+  <div class="final-content">
+    <div class="final-title">太好了！！</div>
+    <div class="final-sub">
+      小阳<br>
+      从今天起<br>
+      我会好好珍惜你<br>
+      每一天都让你开心 🌸
+    </div>
+    <div class="final-hearts">💕 💗 💕</div>
+  </div>
+</div>
+
+<!-- Progress dots -->
+<div id="progress">
+  <div class="dot done" id="d0"></div>
+  <div class="dot" id="d1"></div>
+  <div class="dot" id="d2"></div>
+  <div class="dot" id="d3"></div>
+  <div class="dot" id="d4"></div>
+</div>
+
+<script>
+// ─── BG FLOATING HEARTS ───
+const bgCanvas = document.getElementById('bg');
+const bgCtx = bgCanvas.getContext('2d');
+let bW, bH;
+const hearts = [];
+
+function resizeBg() {
+  bW = bgCanvas.width = window.innerWidth;
+  bH = bgCanvas.height = window.innerHeight;
+}
+resizeBg();
+window.addEventListener('resize', resizeBg);
+
+for (let i = 0; i < 25; i++) {
+  hearts.push({
+    x: Math.random() * window.innerWidth,
+    y: Math.random() * window.innerHeight + window.innerHeight,
+    size: Math.random() * 14 + 6,
+    speed: Math.random() * 0.6 + 0.3,
+    opacity: Math.random() * 0.35 + 0.05,
+    wobble: Math.random() * Math.PI * 2,
+    wobbleSpeed: Math.random() * 0.02 + 0.01,
+    char: ['💗','💕','🌸','✨','💖'][Math.floor(Math.random()*5)]
+  });
+}
+
+function bgLoop() {
+  bgCtx.clearRect(0, 0, bW, bH);
+  hearts.forEach(h => {
+    h.y -= h.speed;
+    h.wobble += h.wobbleSpeed;
+    h.x += Math.sin(h.wobble) * 0.5;
+    if (h.y < -50) { h.y = bH + 50; h.x = Math.random() * bW; }
+    bgCtx.globalAlpha = h.opacity;
+    bgCtx.font = `${h.size}px serif`;
+    bgCtx.fillText(h.char, h.x, h.y);
+  });
+  bgCtx.globalAlpha = 1;
+  requestAnimationFrame(bgLoop);
+}
+bgLoop();
+
+// ─── NAVIGATION ───
+let currentScreen = 1;
+
+function goTo(n) {
+  document.getElementById('s' + currentScreen).classList.remove('active');
+  currentScreen = n;
+  document.getElementById('s' + n).classList.add('active');
+  for (let i = 0; i < 5; i++) {
+    document.getElementById('d' + i).classList.toggle('done', i < n);
+  }
+  if (n === 3) initStarCanvas();
+  if (n === 5) startFireworks();
+}
+
+// ─── SCREEN 1: Envelope ───
+function openEnvelope() {
+  spawnParticles(window.innerWidth/2, window.innerHeight/2, '#f2c14e', 20);
+  setTimeout(() => goTo(2), 600);
+}
+
+// ─── SCREEN 2: Petals ───
+let petalCount = 0;
+function burstPetals(e) {
+  petalCount++;
+  const burst = document.getElementById('petalBurst');
+  const rect = document.getElementById('rose').getBoundingClientRect();
+  const cx = rect.left + rect.width/2;
+  const cy = rect.top + rect.height/2;
+
+  for (let i = 0; i < 12; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = (i / 12) * Math.PI * 2;
+    const dist = 60 + Math.random() * 80;
+    p.style.cssText = `
+      left:${cx}px; top:${cy}px;
+      width:${8+Math.random()*6}px; height:${12+Math.random()*8}px;
+      background:hsl(${340+Math.random()*30},80%,${65+Math.random()*15}%);
+      border-radius:50% 50% 50% 0;
+      --tx:${Math.cos(angle)*dist}px;
+      --ty:${Math.sin(angle)*dist}px;
+      animation-duration:${0.8+Math.random()*0.6}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1500);
+  }
+
+  if (petalCount >= 3) {
+    document.querySelector('.tap-rose-hint').textContent = '✨ 好美啊～';
+  }
+}
+
+// ─── SCREEN 3: Star canvas ───
+const starC = document.getElementById('star-canvas');
+const starCtx = starC.getContext('2d');
+let stars3 = [], trails = [], isDrawing = false, lastPt = null;
+
+function initStarCanvas() {
+  starC.width = window.innerWidth;
+  starC.height = window.innerHeight;
+  stars3 = [];
+  for (let i = 0; i < 180; i++) {
+    stars3.push({
+      x: Math.random() * starC.width,
+      y: Math.random() * starC.height * 0.75,
+      r: Math.random() * 1.5 + 0.3,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.02 + 0.01
+    });
+  }
+  starLoop();
+
+  starC.addEventListener('touchstart', e => {
+    isDrawing = true;
+    const t = e.touches[0];
+    lastPt = { x: t.clientX, y: t.clientY };
+  }, { passive:true });
+
+  starC.addEventListener('touchmove', e => {
+    if (!isDrawing) return;
+    const t = e.touches[0];
+    const pt = { x: t.clientX, y: t.clientY };
+    trails.push({ x1:lastPt.x, y1:lastPt.y, x2:pt.x, y2:pt.y, alpha:1 });
+    spawnParticles(pt.x, pt.y, '#f0e0ff', 3, true);
+    lastPt = pt;
+  }, { passive:true });
+
+  starC.addEventListener('touchend', () => isDrawing = false, { passive:true });
+  starC.addEventListener('mousedown', e => { isDrawing=true; lastPt={x:e.clientX,y:e.clientY}; });
+  starC.addEventListener('mousemove', e => {
+    if (!isDrawing) return;
+    const pt = {x:e.clientX,y:e.clientY};
+    trails.push({x1:lastPt.x,y1:lastPt.y,x2:pt.x,y2:pt.y,alpha:1});
+    lastPt = pt;
+  });
+  starC.addEventListener('mouseup', () => isDrawing=false);
+}
+
+function starLoop() {
+  if (!document.getElementById('s3').classList.contains('active')) {
+    requestAnimationFrame(starLoop); return;
+  }
+  starCtx.clearRect(0, 0, starC.width, starC.height);
+
+  stars3.forEach(s => {
+    s.phase += s.speed;
+    const a = 0.4 + 0.6 * Math.abs(Math.sin(s.phase));
+    starCtx.beginPath();
+    starCtx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+    starCtx.fillStyle = `rgba(220,200,255,${a})`;
+    starCtx.fill();
+  });
+
+  trails = trails.filter(t => t.alpha > 0.01);
+  trails.forEach(t => {
+    t.alpha *= 0.97;
+    starCtx.beginPath();
+    starCtx.moveTo(t.x1, t.y1);
+    starCtx.lineTo(t.x2, t.y2);
+    starCtx.strokeStyle = `rgba(240,200,255,${t.alpha})`;
+    starCtx.lineWidth = 2.5;
+    starCtx.lineCap = 'round';
+    starCtx.stroke();
+  });
+
+  requestAnimationFrame(starLoop);
+}
+
+// ─── SCREEN 4: No button dodge ───
+let noMoved = 0;
+function moveNo() {
+  noMoved++;
+  const btn = document.getElementById('btnNo');
+  const maxX = window.innerWidth - 120;
+  const maxY = window.innerHeight - 60;
+  const nx = 20 + Math.random() * maxX;
+  const ny = 100 + Math.random() * (maxY - 100);
+  btn.style.position = 'fixed';
+  btn.style.left = nx + 'px';
+  btn.style.top = ny + 'px';
+  btn.style.zIndex = 999;
+  if (noMoved > 4) btn.style.opacity = '0';
+}
+
+function sayYes() {
+  const btn = document.querySelector('.btn-yes');
+  const rect = btn.getBoundingClientRect();
+  spawnParticles(rect.left + rect.width/2, rect.top + rect.height/2, '#f9a8b8', 40);
+  setTimeout(() => goTo(5), 800);
+}
+
+// ─── SCREEN 5: Fireworks ───
+const fwCanvas = document.getElementById('fw-canvas');
+const fwCtx = fwCanvas.getContext('2d');
+let fwParticles = [];
+
+function startFireworks() {
+  fwCanvas.width = window.innerWidth;
+  fwCanvas.height = window.innerHeight;
+  fwLoop();
+  for (let i = 0; i < 8; i++) {
+    setTimeout(() => launchFirework(), i * 400);
+  }
+  setInterval(launchFirework, 1200);
+}
+
+function launchFirework() {
+  const x = 80 + Math.random() * (fwCanvas.width - 160);
+  const y = 60 + Math.random() * (fwCanvas.height * 0.5);
+  const hue = Math.random() * 60 + 320;
+  const emojis = ['💗','💖','💕','🌸','✨','⭐','🌟'];
+  const count = 28;
+
+  for (let i = 0; i < count; i++) {
+    const angle = (i / count) * Math.PI * 2;
+    const speed = 2 + Math.random() * 4;
+    fwParticles.push({
+      x, y,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      alpha: 1,
+      color: `hsl(${hue + Math.random()*40},90%,65%)`,
+      size: 3 + Math.random() * 4,
+      isEmoji: Math.random() > 0.7,
+      emoji: emojis[Math.floor(Math.random()*emojis.length)]
+    });
+  }
+}
+
+function fwLoop() {
+  fwCtx.fillStyle = 'rgba(8,2,8,0.18)';
+  fwCtx.fillRect(0, 0, fwCanvas.width, fwCanvas.height);
+
+  fwParticles = fwParticles.filter(p => p.alpha > 0.02);
+  fwParticles.forEach(p => {
+    p.x += p.vx;
+    p.y += p.vy;
+    p.vy += 0.06;
+    p.vx *= 0.99;
+    p.alpha *= 0.965;
+
+    if (p.isEmoji) {
+      fwCtx.globalAlpha = p.alpha;
+      fwCtx.font = `${p.size * 2.5}px serif`;
+      fwCtx.fillText(p.emoji, p.x, p.y);
+      fwCtx.globalAlpha = 1;
+    } else {
+      fwCtx.beginPath();
+      fwCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+      fwCtx.fillStyle = p.color;
+      fwCtx.globalAlpha = p.alpha;
+      fwCtx.fill();
+      fwCtx.globalAlpha = 1;
+    }
+  });
+
+  requestAnimationFrame(fwLoop);
+}
+
+// ─── UTIL: spawn particles ───
+function spawnParticles(x, y, color, count, small = false) {
+  for (let i = 0; i < count; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const angle = Math.random() * Math.PI * 2;
+    const dist = small ? 20 + Math.random()*30 : 50 + Math.random()*100;
+    const size = small ? 3 + Math.random()*3 : 5 + Math.random()*8;
+    p.style.cssText = `
+      left:${x}px; top:${y}px;
+      width:${size}px; height:${size}px;
+      background:${color};
+      --tx:${Math.cos(angle)*dist}px;
+      --ty:${Math.sin(angle)*dist - (small?0:40)}px;
+      animation-duration:${0.6+Math.random()*0.8}s;
+    `;
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 1500);
+  }
+}
+</script>
+</body>
+</html>
